@@ -1,16 +1,17 @@
 import express from 'express'
+import { v4 as uuidv4 } from 'uuid';
 
 const app = express();
 const port = 3000;
 
 const todos = [
     {
-        id: 1,
+        id: uuidv4(),
         title: 'todo1',
         content: 'some stuff'
     },
     {
-        id: 2,
+        id: uuidv4(),
         title: 'todo2',
         content: 'some stuff'
     }
@@ -24,19 +25,19 @@ app.get('/todos', (req, res) => {
 
 app.post('/todos', (req, res) => {
     const todo = {
-        id: todos.length + 1,   
+        id: uuidv4(),   
         title: req.body.title,
         content: req.body.content,
     };
 
     todos.push(todo);
 
-    res.status(201).send(`${todo.id}`);
+    res.status(201).send(todo.id);
 });
 
 app.get('/todos/:id', (req, res) => {
     const todo = todos.find((item) => {
-        return item.id.toString() === req.params.id;
+        return item.id === req.params.id;
     });
 
     if (!todo) {
@@ -47,14 +48,25 @@ app.get('/todos/:id', (req, res) => {
 });
 
 app.delete('/todos/:id', (req, res) =>{
-    const idx = todos.findIndex((item) => item.id.toString() === req.params.id);
+    const idx = todos.findIndex((item) => item.id === req.params.id);
     if (idx < 0){
         res.status(404).send('Todo not found');
+    } else {
+        todos.splice(idx, 1);
+        res.send();
     }
+});
 
-    todos.splice(idx, 1);
-
-    res.send();
+app.put('/todos/:id', (req, res) =>{
+    const idx = todos.findIndex((item) => item.id === req.params.id);
+    if (idx < 0){
+        res.status(404).send('Todo not found');
+    } else {
+        todos[idx].title = req.body.title;
+        todos[idx].content = req.body.content;
+    
+        res.send();
+    }
 })
 
 app.listen(port);
