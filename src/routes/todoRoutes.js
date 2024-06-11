@@ -1,23 +1,23 @@
-const express = require('express');
-const todoService = require('../services/todoService');
+import express from 'express';
+import { getTodos, createTodo, findTodo, deleteTodo, editTodo } from '../services/todoService.js';
 
 const router = express.Router();
 router.use(express.json());
 
 router.get('/', (req, res) => {
-    const todos = todoService.getTodos();
+    const todos = getTodos();
     
     res.send(todos);
 });
 
 router.post('/', (req, res) => {
-    const id = todoService.createTodo(req.body);
+    const id = createTodo(req.body);
 
     res.status(201).send(id);
 });
 
 router.get('/:id', (req, res) => {
-    const todo = todoService.findTodo(req.params.id);
+    const todo = findTodo(req.params.id);
 
     if (todo) {
         res.send(todo);
@@ -27,7 +27,7 @@ router.get('/:id', (req, res) => {
 });
 
 router.delete('/:id', (req, res) =>{
-    const found = todoService.deleteTodo(req.params.id);
+    const found = deleteTodo(req.params.id);
 
     if (found) {
         res.send();
@@ -37,7 +37,7 @@ router.delete('/:id', (req, res) =>{
 });
 
 router.put('/:id', (req, res) =>{
-    const found = todoService.editTodo(req.params.id, req.body);
+    const found = editTodo(req.params.id, req.body);
 
     if (found) {
         res.send();
@@ -50,4 +50,4 @@ function sendNotFound(res) {
     res.status(404).send('Todo not found');
 }
 
-module.exports = router;
+export default router;

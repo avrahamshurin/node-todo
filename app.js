@@ -1,5 +1,5 @@
-const express = require('express')
-const todoRoutes = require('./src/routes/todoRoutes')
+import express from 'express';
+import todoRoutes from './src/routes/todoRoutes.js';
 
 const app = express();
 const port = 3000;
