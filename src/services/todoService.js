@@ -1,68 +1,38 @@
-import { v4 as uuidv4 } from 'uuid';
+import dbService from '../services/dbService.js';
 
-const todos = [
-    {
-        id: uuidv4(),
-        title: 'todo1',
-        content: 'some stuff'
-    },
-    {
-        id: uuidv4(),
-        title: 'todo2',
-        content: 'some stuff'
-    }
-];
+const todoService = {};
 
-function getTodos() {
+todoService.getTodos = async () => {
+    const todos = await dbService.query("SELECT * FROM todo");
+    
     return todos;
 }
 
-function createTodo(todoBody) {
-    const todo = {
-        id: uuidv4(),   
-        title: todoBody.title,
-        content: todoBody.content,
-    };
+todoService.createTodo = async(todoBody) => {
+    const result = await dbService.query("INSERT INTO todo (title, content) Values ($1, $2) RETURNING t_id",
+     [todoBody.title, todoBody.content]);
+    const { t_id } = result[0];
 
-    todos.push(todo);
-
-    return todo.id;
+    return t_id;
 }
 
-function findTodo(id) {
-    return todos.find((item) => {
-        return item.id === id;
-    });
+todoService.findTodo = async (id) => {
+    const todo = await dbService.query("SELECT * FROM todo WHERE t_id = $1", [id]);
+
+    return todo[0];
 }
 
-function deleteTodo(id) {
-    const idx = todos.findIndex((item) => item.id === id);
+todoService.deleteTodo = async (id) => {
+    const result = await dbService.query("DELETE FROM todo WHERE t_id = $1 RETURNING t_id", [id]);
     
-    if (idx < 0){
-        return false;
-    } else {
-        todos.splice(idx, 1);
-        return true;
-    }
+    return result.length > 0;
 }
 
-function editTodo(id, todoBody) {
-    const idx = todos.findIndex((item) => item.id === id);
-    
-    if (idx < 0){
-        return false;
-    } else {
-        todos[idx].title = todoBody.title;
-        todos[idx].content = todoBody.content;
-    
-        return true;
-    }
+todoService.editTodo = async (id, todoBody) => {
+    const result = await dbService.query("UPDATE todo SET title = $1, content = $2 WHERE t_id = $3 RETURNING t_id",
+     [todoBody.title, todoBody.content, id]);
+
+     return result.length > 0;
 }
 
-export {
-    getTodos,
-    createTodo,
-    findTodo,
-    deleteTodo,
-    editTodo
-};
+export default todoService;

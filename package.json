@@ -6,8 +6,8 @@
   "main": "app",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node app",
-    "dev": "nodemon app"
+    "start": "node --env-file .env app",
+    "dev": "nodemon --env-file .env app"
   },
   "keywords": [],
   "author": "",
@@ -19,6 +19,7 @@
     "express": "^4.19.2",
     "express-validator": "^7.1.0",
     "morgan": "^1.10.0",
+    "pg": "^8.12.0",
     "uuid": "^10.0.0"
   }
 }
