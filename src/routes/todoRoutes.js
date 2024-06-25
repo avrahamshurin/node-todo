@@ -47,6 +47,16 @@ router.put('/:id', checkAndValidateRequest(editTodoValidationSchema), async (req
     }
 })
 
+router.post('/setTodoStatus/:id', async (req, res) => {
+    const found = await todoService.setTodoStatus(req.params.id, req.query.isCompleted);
+
+    if (found) {
+        res.send();
+    } else {
+        sendNotFound(res)
+    }
+});
+
 function sendNotFound(res) {
     res.status(404).json({error: 'Todo not found'});
 }

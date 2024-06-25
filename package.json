@@ -7,7 +7,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node --env-file .env app",
-    "dev": "nodemon --env-file .env app"
+    "dev": "nodemon --env-file .env app",
+    "startdocker": "docker compose up -d",
+    "startall": "npm run startdocker && npm run dev"
   },
   "keywords": [],
   "author": "",
