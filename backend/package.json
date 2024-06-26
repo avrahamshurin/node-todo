@@ -6,8 +6,8 @@
   "main": "app",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node app",
-    "dev": "nodemon --env-file .env app",
+    "prod": "node app",
+    "dev": "nodemon -L app",
     "startdocker": "docker compose up -d",
     "startall": "npm run startdocker && npm run dev"
   },

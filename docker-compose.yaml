@@ -8,6 +8,9 @@ services:
     depends_on:
       - postgresdb
     restart: always
+    volumes:
+      - ./backend/src:/usr/src/app/src
+      - ./backend/app.js:/usr/src/app/app.js
 
   postgresdb:
     image: postgres
