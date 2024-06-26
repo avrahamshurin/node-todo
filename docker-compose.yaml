@@ -1,15 +1,20 @@
 version: '3.8'
 services:
+  backend:
+    build: ./backend
+    env_file: .env
+    ports:
+      - "${BACKEND_EXPOSED_PORT}:${BACKEND_PORT}"
+    depends_on:
+      - postgresdb
+    restart: always
+
   postgresdb:
     image: postgres
     restart: always
-    env_file: ./.env
-    environment:
-      - POSTGRES_USER=$DB_USER
-      - POSTGRES_PASSWORD=$DB_PASSWORD
-      - POSTGRES_DB=$DB_NAME
+    env_file: .env
     ports:
-      - '$DB_PORT:5432'  
+      - '${POSTGRES_EXPOSED_PORT}:5432'  
     volumes:
-      - ./database/localdb:/var/lib/postgresql/data
-      - ./database/scripts:/docker-entrypoint-initdb.d  
+      - ./backend/database/localdb:/var/lib/postgresql/data
+      - ./backend/database/scripts:/docker-entrypoint-initdb.d  

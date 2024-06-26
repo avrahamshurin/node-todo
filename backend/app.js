@@ -4,10 +4,11 @@ import todoRoutes from './src/routes/todoRoutes.js';
 import { handleError } from './src/middleware/errorHandlingMiddleware.js';
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.BACKEND_PORT || 3000;
+console.log(`running on port ${port}`)
 
 app.use(morgan('tiny'));
 app.use('/todos', todoRoutes);
-app.use(handleError)
+app.use(handleError);
 
 app.listen(port);
