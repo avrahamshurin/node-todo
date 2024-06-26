@@ -6,59 +6,81 @@ import { checkAndValidateRequest } from '../middleware/validationMiddleware.js'
 const router = express.Router();
 router.use(express.json());
 
-router.get('/', async (req, res) => {
-    const todos = await todoService.getTodos();
-    
-    res.send(todos);
+router.get('/', async (req, res, next) => {
+    try {
+        const todos = await todoService.getTodos();
+        res.send(todos);
+    } catch (error) {
+        next(error);
+    }
 });
 
-router.post('/', checkAndValidateRequest(createTodoValidationSchema), async (req, res) => {
-    const id = await todoService.createTodo(req.body);
-
-    res.status(201).json({id: id});
+router.post('/', checkAndValidateRequest(createTodoValidationSchema), async (req, res, next) => {
+    try {
+        const id = await todoService.createTodo(req.body);
+        res.status(201).json({ id: id });
+    } catch (error) {
+        next(error);
+    }
 });
 
-router.get('/:id', async (req, res) => {
-    const todo = await todoService.findTodo(req.params.id);
-    
-    if (todo) {
-        res.send(todo);
-    } else {
-        sendNotFound(res)
-    };
+router.get('/:id', async (req, res, next) => {
+    try {
+        const todo = await todoService.findTodo(req.params.id);
+
+        if (todo) {
+            res.send(todo);
+        } else {
+            sendNotFound(res)
+        };
+    } catch (error) {
+        next(error);
+    }
 });
 
-router.delete('/:id', async (req, res) => {
-    const found = await todoService.deleteTodo(req.params.id);
-    if (found) {
-        res.send();
-    } else {
-        sendNotFound(res)
-    };
+router.delete('/:id', async (req, res, next) => {
+    try {
+        const found = await todoService.deleteTodo(req.params.id);
+        if (found) {
+            res.send();
+        } else {
+            sendNotFound(res)
+        };
+    } catch (error) {
+        next(error);
+    }
 });
 
-router.put('/:id', checkAndValidateRequest(editTodoValidationSchema), async (req, res) => {
-    const found = await todoService.editTodo(req.params.id, req.body);
+router.put('/:id', checkAndValidateRequest(editTodoValidationSchema), async (req, res, next) => {
+    try {
+        const found = await todoService.editTodo(req.params.id, req.body);
 
-    if (found) {
-        res.send();
-    } else {
-        sendNotFound(res)
+        if (found) {
+            res.send();
+        } else {
+            sendNotFound(res)
+        }
+    } catch (error) {
+        next(error);
     }
 })
 
-router.post('/setTodoStatus/:id', async (req, res) => {
-    const found = await todoService.setTodoStatus(req.params.id, req.query.isCompleted);
+router.post('/setTodoStatus/:id', async (req, res, next) => {
+    try {
+        const found = await todoService.setTodoStatus(req.params.id, req.query.isCompleted);
 
-    if (found) {
-        res.send();
-    } else {
-        sendNotFound(res)
+        if (found) {
+            res.send();
+        } else {
+            sendNotFound(res)
+        }
+    } catch (error) {
+        next(error);
     }
 });
 
 function sendNotFound(res) {
-    res.status(404).json({error: 'Todo not found'});
+    res.status(404).json({ error: 'Todo not found' });
 }
 
 export default router;
