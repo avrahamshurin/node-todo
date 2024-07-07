@@ -2,13 +2,15 @@ import express from 'express';
 import todoService from '../services/todoService.js';
 import { createTodoValidationSchema, editTodoValidationSchema } from '../validationSchemas/todoValidationSchemas.js';
 import { checkAndValidateRequest } from '../middleware/validationMiddleware.js'
+import { requireAuth } from '../middleware/authenticationMiddleware.js';
 
 const router = express.Router();
 router.use(express.json());
+router.use(requireAuth);
 
 router.get('/', async (req, res, next) => {
     try {
-        const todos = await todoService.getTodos();
+        const todos = await todoService.getTodos(req.userId);
         res.send(todos);
     } catch (error) {
         next(error);
@@ -17,7 +19,7 @@ router.get('/', async (req, res, next) => {
 
 router.post('/', checkAndValidateRequest(createTodoValidationSchema), async (req, res, next) => {
     try {
-        const id = await todoService.createTodo(req.body);
+        const id = await todoService.createTodo(req.userId, req.body);
         res.status(201).json({ id: id });
     } catch (error) {
         next(error);

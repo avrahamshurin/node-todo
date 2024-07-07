@@ -11,6 +11,7 @@ services:
     volumes:
       - ./backend/src:/usr/src/app/src
       - ./backend/app.js:/usr/src/app/app.js
+      - ./backend/package.json:/usr/src/app/package.json
 
   postgresdb:
     image: postgres
